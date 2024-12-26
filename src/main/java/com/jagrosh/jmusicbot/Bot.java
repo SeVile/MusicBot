@@ -29,6 +29,11 @@ import java.util.Objects;
 import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.entities.Activity;
 import net.dv8tion.jda.api.entities.Guild;
+/* */
+import java.io.*;
+import java.nio.file.*;
+import java.util.regex.*;
+/* */
 
 /**
  *
@@ -56,6 +61,10 @@ public class Bot
         this.settings = settings;
         this.playlists = new PlaylistLoader(config);
         this.threadpool = Executors.newSingleThreadScheduledExecutor();
+        
+        //Update config.txt before init
+        updateConfig();
+        
         this.players = new PlayerManager(this, config);
         this.players.init();
         this.nowplaying = new NowplayingHandler(this);
@@ -156,5 +165,50 @@ public class Bot
     public void setGUI(GUI gui)
     {
         this.gui = gui;
+    }
+    
+    private void updateConfig()
+    {
+        try {
+            // Uruchom Docker lub inny proces
+            Process process = new ProcessBuilder("docker", "run", "quay.io/invidious/youtube-trusted-session-generator")
+                    .redirectErrorStream(true)
+                    .start();
+
+            // Read data from Docker process
+            BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+            StringBuilder output = new StringBuilder();
+            String line;
+            while ((line = reader.readLine()) != null) {
+                output.append(line).append("\n");
+            }
+            process.waitFor();
+
+            // Parse data
+            String dockerOutput = output.toString();
+            Pattern poTokenPattern = Pattern.compile("po_token:\\s*([^\\s]+)");
+            Pattern visitorDataPattern = Pattern.compile("visitor_data:\\s*([^\\s]+)");
+
+            Matcher poTokenMatcher = poTokenPattern.matcher(dockerOutput);
+            Matcher visitorDataMatcher = visitorDataPattern.matcher(dockerOutput);
+
+            if (poTokenMatcher.find() && visitorDataMatcher.find()) {
+                String poToken = poTokenMatcher.group(1);
+                String visitorData = visitorDataMatcher.group(1);
+
+                // Update config.txt
+                Path configPath = Paths.get("config.txt");
+                String configContent = Files.readString(configPath);
+                configContent = configContent.replaceAll("ytpotoken\\s*=\\s*\"[^\"]*\"", "ytpotoken = \"" + poToken + "\"");
+                configContent = configContent.replaceAll("ytvisitordata\\s*=\\s*\"[^\"]*\"", "ytvisitordata = \"" + visitorData + "\"");
+                Files.writeString(configPath, configContent);
+
+                System.out.println("Config.txt succesfully updated!");
+            } else {
+                System.err.println("ERR: Failed to find po_token or visitor_data in Docker result.");
+            }
+        } catch (Exception e) {
+            System.err.println("ERR: Error while updating config.txt " + e.getMessage());
+        }
     }
 }
