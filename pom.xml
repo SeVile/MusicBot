@@ -3,14 +3,14 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.jagrosh</groupId>
     <artifactId>JMusicBot</artifactId>
-    <version>0.4.3.7</version>
+    <version>0.4.4.0</version>
     <packaging>jar</packaging>
 
     <repositories>
         <repository>
-            <id>dv8tion</id>
-            <name>m2-dv8tion</name>
-            <url>https://m2.dv8tion.net/releases</url>
+            <id>chew</id>
+            <name>m2-chew</name>
+            <url>https://m2.chew.pro/releases</url>
         </repository>
         <repository>
             <id>central</id>
@@ -42,19 +42,32 @@
         <dependency>
             <groupId>net.dv8tion</groupId>
             <artifactId>JDA</artifactId>
-            <version>4.4.1_353</version>
+            <version>5.6.1</version>
         </dependency>
         <dependency>
-            <groupId>com.github.JDA-Applications</groupId>
-            <artifactId>JDA-Utilities</artifactId>
-            <version>c16a4b264b</version>
+            <groupId>pw.chew</groupId>
+            <artifactId>jda-chewtils</artifactId>
+            <version>2.1</version>
+            <scope>compile</scope>
+            <type>pom</type>
         </dependency>
-
+        <dependency>
+            <groupId>pw.chew</groupId>
+            <artifactId>jda-chewtils-command</artifactId>
+            <version>2.1</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>pw.chew</groupId>
+            <artifactId>jda-chewtils-examples</artifactId>
+            <version>2.1</version>
+            <scope>compile</scope>
+        </dependency>
         <!-- Music Dependencies -->
         <dependency>
             <groupId>dev.arbjerg</groupId>
             <artifactId>lavaplayer</artifactId>
-            <version>2.2.3</version>
+            <version>2.2.4</version>
         </dependency>
         <dependency>
             <groupId>dev.arbjerg</groupId>
@@ -64,7 +77,7 @@
         <dependency>
             <groupId>dev.lavalink.youtube</groupId>
             <artifactId>v2</artifactId>
-            <version>1.13.2</version>
+            <version>1.13.5</version>
         </dependency>
         <dependency>
             <groupId>com.github.jagrosh</groupId>
@@ -81,7 +94,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.2.13</version>
+            <version>1.5.18</version>
         </dependency>
         <dependency>
             <groupId>com.typesafe</groupId>
