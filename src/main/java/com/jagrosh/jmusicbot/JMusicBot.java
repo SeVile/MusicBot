@@ -116,6 +116,9 @@ public class JMusicBot
         // attempt to log in and start
         try
         {
+            moe.kyokobot.libdave.DaveFactory daveFactory = new moe.kyokobot.libdave.NativeDaveFactory();
+            net.dv8tion.jda.api.audio.dave.DaveSessionFactory daveSessionFactory = new moe.kyokobot.libdave.jda.LDJDADaveSessionFactory(daveFactory);
+
             JDA jda = JDABuilder.create(config.getToken(), Arrays.asList(INTENTS))
                     .enableCache(CacheFlag.MEMBER_OVERRIDES, CacheFlag.VOICE_STATE)
                     .disableCache(CacheFlag.ACTIVITY, CacheFlag.CLIENT_STATUS, CacheFlag.EMOJI, CacheFlag.ONLINE_STATUS, CacheFlag.STICKER, CacheFlag.SCHEDULED_EVENTS)
@@ -124,6 +127,7 @@ public class JMusicBot
                             ? OnlineStatus.INVISIBLE : OnlineStatus.DO_NOT_DISTURB)
                     .addEventListeners(client, waiter, new Listener(bot))
                     .setBulkDeleteSplittingEnabled(true)
+                    .setAudioModuleConfig(new net.dv8tion.jda.api.audio.AudioModuleConfig().withDaveSessionFactory(daveSessionFactory))
                     .build();
             bot.setJDA(jda);
 
