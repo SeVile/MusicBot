@@ -20,3 +20,11 @@ jobs:
           cache: maven
       - name: Build and Test with Maven
         run: mvn --batch-mode --update-snapshots verify
+      - name: Rename jar
+        run: mv target/*-All.jar JMusicBot-${{ github.sha }}.jar
+      - name: Upload jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: jar
+          path: JMusicBot-${{ github.sha }}.jar
+          if-no-files-found: error
