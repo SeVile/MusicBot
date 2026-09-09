@@ -39,7 +39,13 @@ import com.sedmelluq.lava.extensions.youtuberotator.tools.ip.IpBlock;
 import com.sedmelluq.lava.extensions.youtuberotator.tools.ip.Ipv4Block;
 import com.sedmelluq.lava.extensions.youtuberotator.tools.ip.Ipv6Block;
 import dev.lavalink.youtube.YoutubeAudioSourceManager;
+import dev.lavalink.youtube.YoutubeSource;
+import dev.lavalink.youtube.clients.AndroidVr;
+import dev.lavalink.youtube.clients.ClientOptions;
+import dev.lavalink.youtube.clients.Ios;
+import dev.lavalink.youtube.clients.Music;
 import dev.lavalink.youtube.clients.Web;
+import dev.lavalink.youtube.clients.WebEmbedded;
 import net.dv8tion.jda.api.entities.Guild;
 
 /**
@@ -63,9 +69,14 @@ public class PlayerManager extends DefaultAudioPlayerManager
         TransformativeAudioSourceManager.createTransforms(bot.getConfig().getTransforms()).forEach(t -> registerSourceManager(t));
 
         if (config.getYTPoToken() != null && config.getYTVisitorData() != null)
-            Web.setPoTokenAndVisitorData(config.getYTPoToken(), config.getYTVisitorData());
+            YoutubeSource.setPoTokenAndVisitorData(config.getYTPoToken(), config.getYTVisitorData());
 
-        YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true);
+        // Ios currently provides direct audio URLs when WEB returns SABR-only formats.
+        // Its search response produces NO_TRACK, which stops fallback to other clients.
+        ClientOptions iosOptions = ClientOptions.DEFAULT.copy();
+        iosOptions.setSearching(false);
+        YoutubeAudioSourceManager yt = new YoutubeAudioSourceManager(true,
+                new Music(), new Ios(iosOptions), new AndroidVr(), new Web(), new WebEmbedded());
         if (config.getYTRoutingPlanner() != YouTubeUtil.RoutingPlanner.NONE)
         {
             AbstractRoutePlanner routePlanner = YouTubeUtil.createRouterPlanner(config.getYTRoutingPlanner(), config.getYTIpBlocks());

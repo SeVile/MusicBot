@@ -113,7 +113,8 @@
         <dependency>
             <groupId>dev.lavalink.youtube</groupId>
             <artifactId>common</artifactId>
-            <version>1.18.0</version>
+            <!-- Includes SABR playback support; not yet included in a numbered release. -->
+            <version>f45bbb7aebfcbc1c553769e04af6cd43afa8b7c3-SNAPSHOT</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
